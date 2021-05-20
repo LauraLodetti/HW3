@@ -225,7 +225,7 @@ class Bell {
     if (isMouseOver) {
       // select only one bell at the same time
       for (Bell b: bells)
-         b.isBellHels = false;
+         b.isBellHeld = false;
       isBellHeld = true;
       //set the difference between where wouse was clicked and the center of the bell
       offsetx = mouseX-xBell;
