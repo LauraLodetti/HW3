@@ -4,9 +4,9 @@
    y coordinate --> volume of the bell
    mouse wheel up --> increases bell dimension --> decreases frequency
    mouse wheel down --> decreases bell dimension --> increases frequency
-   not yet done:
-   D on the keyboard: increases bell transparency --> decreases number of harmonics
-   A on the keyboard: decreases bell transparency --> increases number of harmonics
+   QWER |
+   ASDF |--> these keys allow to play the bells
+   ZXCV |
    (other possib: x coord = freq, y coord volume, dimension duration, transparency harmonics)
 */
 
@@ -14,6 +14,7 @@
 - bells are drawn in order in the array --> the first will be always BEHIND the last in order of index
 - overlapping bells can be dragged together and sometimes it is difficult not to
 - the increasing size is done with RELOADING the image in order to not lose quality, but it is slow
+- bells can't be selected simoultaneously
 */
 
 import oscP5.*;
@@ -28,8 +29,6 @@ int num = 12 ; //number of bells in the application
 PFont font;
 Bell[] bells = new Bell[num];
 
-
-/* Some variables for button */
 color btncolor = 200;
 
 void setup(){
@@ -44,7 +43,7 @@ void setup(){
    // **** for very high numbers does not look even though ****
    float xInitDistance = width / (num+1.0); 
    float yInit = height / 2.0;
-   
+   // creating the bells
    for (int i =0; i<num; i++){
      String l;
      char k;
@@ -66,6 +65,7 @@ void setup(){
      bells[i] = new  Bell(xInitDistance*(i+1.0), yInit, "bell-icons-16638.png", l, k);
    }
    
+   // start oscP5, listening for incoming messages at port 12000
    oscP5 = new OscP5(this, 12000);
    // Initializing the Remote location
    myRemoteLocation = new NetAddress("127.0.0.1",64180);
@@ -74,6 +74,7 @@ void setup(){
 
 void draw() {
   background(255);
+  //displaying bells and their text
   for (Bell b : bells) {
     b.display();
   }
@@ -182,12 +183,12 @@ class Bell {
   // offsets used during dragging;
   float offsetx;
   float offsety;
-   
+  
   // -- constructor. Inputs: x coordinate (middle), y coordinate (middle), name of the file of the image.
   Bell(float x, float y, String imageNameAsString, String l, char k){
-    xBell=x;
-    yBell=y;
-    name=imageNameAsString;
+    xBell = x;
+    yBell = y;
+    name = imageNameAsString;
     keyBell = k;
     letterBell = l;
     imageBell = loadImage(name);
