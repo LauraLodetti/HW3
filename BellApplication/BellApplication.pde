@@ -223,7 +223,10 @@ class Bell {
   /* when the mouse is pressed, changes the boolean and changes the colour to green */ 
   void mousePressed() {
     if (isMouseOver) {
-      isBellHeld=true;
+      // select only one bell at the same time
+      for (Bell b: bells)
+         b.isBellHels = false;
+      isBellHeld = true;
       //set the difference between where wouse was clicked and the center of the bell
       offsetx = mouseX-xBell;
       offsety = mouseY-yBell;
