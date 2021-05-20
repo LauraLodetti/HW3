@@ -4,9 +4,9 @@
    y coordinate --> volume of the bell
    mouse wheel up --> increases bell dimension --> decreases frequency
    mouse wheel down --> decreases bell dimension --> increases frequency
-   QWER
-   ASDF --> these keys should allow to play the bells. at the moment, they do not allow to play exaclty simultaneously
-   ZXCV 
+   not yet done:
+   D on the keyboard: increases bell transparency --> decreases number of harmonics
+   A on the keyboard: decreases bell transparency --> increases number of harmonics
    (other possib: x coord = freq, y coord volume, dimension duration, transparency harmonics)
 */
 
@@ -14,7 +14,6 @@
 - bells are drawn in order in the array --> the first will be always BEHIND the last in order of index
 - overlapping bells can be dragged together and sometimes it is difficult not to
 - the increasing size is done with RELOADING the image in order to not lose quality, but it is slow
-- bells can't be selected simoultaneously
 */
 
 import oscP5.*;
@@ -24,21 +23,28 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-//declarations
+
 int num = 12 ; //number of bells in the application
-Bell[] bells = new Bell[num];
 PFont font;
+Bell[] bells = new Bell[num];
+
+
+/* Some variables for button */
+color btncolor = 200;
 
 void setup(){
    size(1280,720);
    noStroke();
-   // font for the letter of the bells
-   font = createFont("Arial Bold",18);
+   
+   font = createFont("Arial Bold", 18);
+   textFont(font);
+   textAlign(CENTER, CENTER);
+   
    //used to place the bells in a line, at the same distance one from the other.
    // **** for very high numbers does not look even though ****
    float xInitDistance = width / (num+1.0); 
    float yInit = height / 2.0;
-   // creating the bells
+   
    for (int i =0; i<num; i++){
      String l;
      char k;
@@ -59,23 +65,31 @@ void setup(){
      }
      bells[i] = new  Bell(xInitDistance*(i+1.0), yInit, "bell-icons-16638.png", l, k);
    }
-   // start oscP5, listening for incoming messages at port 12000 
-   oscP5 = new OscP5(this,12000);
-   // initializing the Remote location
-   myRemoteLocation = new NetAddress("127.0.0.1",64180); //clara used 57120
+   
+   oscP5 = new OscP5(this, 12000);
+   // Initializing the Remote location
+   myRemoteLocation = new NetAddress("127.0.0.1",64180);
+   
 }
 
 void draw() {
   background(255);
-  //displaying bells and their text
   for (Bell b : bells) {
     b.display();
   }
+  
   for (Bell b : bells) {
     fill(0);
-    textFont(font);
-    text(b.letterBell,b.xBell-10,b.yBell-b.imageBell.height/2.0-5); 
+    text(b.letterBell,b.xBell,b.yBell-b.imageBell.height/2.0-10); 
   }
+  
+  updateBtn();
+  stroke(150);
+  fill(btncolor);
+  rect(1160, 660, 100, 40);
+  fill(0);
+  text("Reset", 1210, 675);
+  
   //OSC messages
   /*For each bell we need to send xBell, yBell, widthBell
   option 1: OSC message for each bell with these 3 param in this order.
@@ -91,7 +105,8 @@ void draw() {
     myMessage.add(b.yBell);
     myMessage.add(b.widthBell);
   }
-  oscP5.send(myMessage, myRemoteLocation); 
+  oscP5.send(myMessage, myRemoteLocation);
+  
 }
 
 // ----- methods ----- //
@@ -124,15 +139,22 @@ void mouseWheel(MouseEvent event){
 
 void keyPressed(){
   for (Bell b:bells){
-    if( key == b.keyBell){
-      b.R = 0;
-    }
-    else b.R=230;
+    b.setOn(key);
   }
-  
 }
 
- 
+void updateBtn(){
+  if (mouseX>1160 && mouseX<(1160+100) &&
+      mouseY>660 && mouseY<(660+40)){
+    btncolor = 220;
+    if(mousePressed){
+      setup();
+    }
+  }
+  else {
+    btncolor = 200;
+  }
+}
 
 // -------------------
 
@@ -144,7 +166,7 @@ class Bell {
   String name;
   // corresponding key to play the bell
   char keyBell;
-  String letterBell; 
+  String letterBell;
   // inidial dimension of the bell,used in resize. height is final to mantain proportions.
   // only widthBell will change.
   /*final*/ int heightBell = 0;
@@ -156,16 +178,17 @@ class Bell {
   // controls whether we are over the bell, and dragging (holding the mouse)
   boolean isMouseOver;
   boolean isBellHeld;
+  boolean isBellOn;
   // offsets used during dragging;
   float offsetx;
   float offsety;
-
+   
   // -- constructor. Inputs: x coordinate (middle), y coordinate (middle), name of the file of the image.
   Bell(float x, float y, String imageNameAsString, String l, char k){
     xBell=x;
     yBell=y;
     name=imageNameAsString;
-    keyBell=k;
+    keyBell = k;
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
@@ -187,11 +210,14 @@ class Bell {
     if (mouseX>(xBell-imageBell.width/2.0) && mouseX<(xBell+imageBell.width/2.0) &&
       mouseY>(yBell-imageBell.height/2.0) && mouseY<(yBell+imageBell.height/2.0)){
       isMouseOver=true;
-      R = 255;
+      if(isBellOn) R = 100;
+      else R = 255;
     }
     else {
       isMouseOver=false;
-      R=200;}
+      if(isBellOn) R = 0;
+      else R=200;
+    }
   }
   /* when the mouse is pressed, changes the boolean and changes the colour to green */ 
   void mousePressed() {
@@ -229,5 +255,17 @@ class Bell {
        imageBell.resize(widthBell, 0);
     }
   }
-
+  /* when the right mouse is pressed we set the bell on */
+  void setOn(char key) {
+    if (key == keyBell) {
+      if(isBellOn){
+        isBellOn= false;
+        R = 200;
+      }
+      else{
+        isBellOn= true;
+        R = 100;
+      }
+    }
+  }
 }
