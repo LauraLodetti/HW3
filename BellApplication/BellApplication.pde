@@ -68,7 +68,7 @@ void setup(){
    // start oscP5, listening for incoming messages at port 12000
    oscP5 = new OscP5(this, 12000);
    // Initializing the Remote location
-   myRemoteLocation = new NetAddress("127.0.0.1",64180);
+   myRemoteLocation = new NetAddress("127.0.0.1",57120);
    
 }
 
