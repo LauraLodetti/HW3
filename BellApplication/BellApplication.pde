@@ -264,7 +264,7 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
-    if(isMouseOver){
+    if(isMouseOver && widthBell - 3*event.getCount() >= 20 && widthBell - 3*event.getCount() <= 4000){ // minimum width is 20 and max width is 4000 (arbitrary values)
        widthBell = imageBell.width;
        // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
        imageBell = loadImage(name);
@@ -284,8 +284,8 @@ class Bell {
         R = 100;
         
         myMessage = new OscMessage("/bellState");
-        myMessage.add(xBell);
-        myMessage.add(yBell);
+        myMessage.add((xBell / width) * 10);
+        myMessage.add( -(yBell - height) / height); // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
         myMessage.add(widthBell);
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);

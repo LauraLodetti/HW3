@@ -23,7 +23,7 @@ SynthDef(\risset, {
 }).add;
 )
 
-a= Synth(\risset, [\freq, 72.midicps, \dur, 10])
+a = Synth(\risset, [\freq, 72.midicps, \dur, 10])
 a.free
 
 
@@ -31,16 +31,16 @@ a.free
 OSCdef('OSCreceiver',
 	{
 		arg msg;
-		var width1 , x1, y1, x2;
+		var width, x, y;
 
 		// these are the x, y and width of the first bell. need to add all the others
 		// for now I just post the values of the first bell to check that the comunication works
 		// need to normalize the values and use them on the synth
-		x1 = msg[1];
-		y1 = msg[2];
-		width1 = msg[3];
-		x2 = msg[4];
-		postln("x: " + x1 + " - y: " + y1 + "width: " + width1 + "x2: " + x2);
+		x = msg[1];
+		y = msg[2];
+		width = msg[3];
+		postln("x: " + x + "y: " + y + "width: " + width);
+		f = Synth(\risset, [\freq, width, \amp, y * 0.1, \dur, x])
 	},
 	"/bellState"); // the slash is necessary for it to be recognixed as an OSC path
 )
@@ -87,7 +87,6 @@ a = MIDIFunc.noteOn(func:~noteOnFunc);
 		pads.put(num, nil);
 	});
 	("note off num: " + num).postln;
-
 };
 
 b = MIDIFunc.noteOff(func:~noteOffFunc);
