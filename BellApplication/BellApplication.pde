@@ -99,6 +99,14 @@ void draw() {
     triangle(10, 360, 24, 346, 24, 374);
   if(index != 3)
     triangle(1270, 360, 1256, 346, 1256, 374); 
+    
+  OscMessage bellState = new OscMessage("/bellState");
+  for (Bell b : bells) {
+    bellState.add((b.xBell / width) * 10);
+    bellState.add(-(b.yBell - height) / height);
+    bellState.add(b.widthBell);
+  }
+  oscP5.send(bellState, myRemoteLocation);
 }
 
 // ----- methods ----- //
@@ -183,7 +191,7 @@ class Bell {
   // initial dimension of the bell,used in resize. height is final to mantain proportions.
   // only widthBell will change.
   /*final*/ int heightBell = 0;
-  int widthBell = 100;
+  int widthBell = 80;
   // tint of the bell. Decreasing R to 200 when selecting a bell.
   int R = 230;
   // transparency of the bell
@@ -205,7 +213,7 @@ class Bell {
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
-    widthBell = imageBell.width;
+    //widthBell = imageBell.width;
     imageBell.resize(80,0);
   }
   
@@ -283,7 +291,7 @@ class Bell {
         isBellOn= true;
         R = 100;
         
-        myMessage = new OscMessage("/bellState");
+        myMessage = new OscMessage("/myBellState");
         myMessage.add((xBell / width) * 10);
         myMessage.add( -(yBell - height) / height); // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
         myMessage.add(widthBell);
