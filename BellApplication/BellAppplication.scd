@@ -1,28 +1,9 @@
+(
 MIDIClient.init;  // initialize a MIDI client object
 MIDIIn.connectAll;
 NetAddr("127.0.0.1",57120);
-
-(
-// create a new and enabled OSCdef
-// the first argument is the key at which to store this OSCDef in the global collection
-// the second argument is a function that will respond to the incoming message; when evaluated it will have the arguments msg, time, addr and recvPort; we are going to use only the message argument which is an Array in the form of [OSC address, arg1, arg2,...]
-// the third argument is the path of the OSC address (must begin with a / )
-
-OSCdef('OSCreceiver',
-	{
-		arg msg;
-		var width1 , x1, y1;
-
-		// these are the x, y and width of the first bell. need to add all the others
-		// for now I just post the values of the first bell to check that the comunication works
-		// need to normalize the values and use them on the synth
-		x1 = msg[1];
-		y1 = msg[2];
-		width1 = msg[3];
-		postln("x: " + x1 + " - y: " + y1 + "width: " + width1);
-	},
-	"/bellState"); // the slash is necessary for it to be recognixed as an OSC path
 )
+
 
 // Bell (Risset's synthetized bell)
 (
@@ -42,37 +23,49 @@ SynthDef(\risset, {
 }).add;
 )
 
-
 a= Synth(\risset, [\freq, 72.midicps, \dur, 10])
 a.free
+
+
+(
+OSCdef('OSCreceiver',
+	{
+		arg msg;
+		var width1 , x1, y1, x2;
+
+		// these are the x, y and width of the first bell. need to add all the others
+		// for now I just post the values of the first bell to check that the comunication works
+		// need to normalize the values and use them on the synth
+		x1 = msg[1];
+		y1 = msg[2];
+		width1 = msg[3];
+		x2 = msg[4];
+		postln("x: " + x1 + " - y: " + y1 + "width: " + width1 + "x2: " + x2);
+	},
+	"/bellState"); // the slash is necessary for it to be recognixed as an OSC path
+)
+
+postln(x1);
+
+
 
 (
 var pads;
 // create a new array with all slots filled with nils
 pads = Array.newClear(84); // my pad uses midi numbers up to 83
 
-// For NoteOn:
-// val: message value (velocity)
-// num: messange number (note)
-// chan : MIDIchannel, goes from 0 to 15
-// src : unique identifier of the MIDI port
-
 ~noteOnFunc = {arg val, num, chan, src;
 	var node;
 	("note on num: " + num).postln;
-	// first assign to node the element of the array having as index the key number
-	node = pads.at(num);
-	// if the node is not Nil then release the node and put nil in the correspondent element
+	node = pads.at(num);              // first assign to node the element of the array having as index the key number
+	                                 // if the node is not Nil then release the node and put nil in the correspondent element
 	if (node.notNil, {
 		node.release;
 		pads.put(num, nil);
 	});
 
 	// if the node is not Nil means that the correpondent synth is already playing
-	// if the node is Nil then create an instance of Rhodes synth with the correct arguments and using the tail method
-
-	// the tail method create and return a Synth; the first argument is generally a Group, when is setted to nil the synth is added to the tail of the default_group of the default server
-	//Synths on the server are a type of what are called nodes. There's another type of node: groups. Groups are simply collections of nodes, and can contain synths, other groups, or combinations of both.
+	// if the node is Nil then create an instance of risset synth with the correct arguments and using the tail method
 
 	node = Synth.tail(nil, \risset, [\freq, num.midicps]); // here we should use the parameters received from OSCdef
 

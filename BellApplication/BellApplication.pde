@@ -165,7 +165,7 @@ class Bell {
   // corresponding key to play the bell
   char keyBell;
   String letterBell;
-  // inidial dimension of the bell,used in resize. height is final to mantain proportions.
+  // initial dimension of the bell,used in resize. height is final to mantain proportions.
   // only widthBell will change.
   /*final*/ int heightBell = 0;
   int widthBell = 100;
