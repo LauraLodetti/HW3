@@ -64,7 +64,7 @@ OSCdef('OSCreceiver2',
 )
 
 
-
+n = NetAddr("127.0.0.1",12000);
 (
 var pads;
 // create a new array with all slots filled with nils
@@ -85,10 +85,11 @@ pads = Array.newClear(84); // my pad uses midi numbers up to 83
 	// if the node is not Nil means that the correpondent synth is already playing
 	// if the node is Nil then create an instance of risset synth with the correct arguments and using the tail method
 
-	node = Synth.tail(nil, \risset, [\freq, ~bellParam[bellParam*3 + 2], \amp, ~bellParam[ (bellParam*3) + 1] * 0.1, \dur, ~bellParam[bellParam*3]]); // here we should use the parameters received from OSCdef
-
+	node = Synth.tail(nil, \risset, [\freq, ~bellParam[bellParam*3 + 2], \amp, ~bellParam[ (bellParam*3) + 1] * 0.1, \dur, ~bellParam[bellParam*3]]);
 	// assign the instance to the correspondent element of the array
 	pads.put(num, node);
+
+	n.sendMsg("/activeBell" , \bellNumber, bellParam);
 };
 
 // assign the function to the note on message
