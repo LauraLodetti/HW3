@@ -28,6 +28,9 @@ a = Synth(\risset, [\freq, 72.midicps, \dur, 10])
 a.free
 
 
+~bellParam = Array.newClear(37); // stores the parameters of all the bells
+
+
 // a receiver that plays the bells selected from processing
 (
 OSCdef('OSCreceiver',
@@ -50,12 +53,12 @@ OSCdef('OSCreceiver2',
 		arg msg;
 		var width, x, y;
 
-		// these are the x, y and width of the first bell. need to add all the others
-		x = msg[1];
-		y = msg[2];
-		width = msg[3];
-		postln("x: " + x + "y: " + y + "width: " + width);
-		//f = Synth(\risset, [\freq, width, \amp, y * 0.1, \dur, x])
+		for (0, 35, {
+			arg i;
+			~bellParam[i] = msg[i+1];
+		});
+
+		postln("x1: " + ~bellParam[1] + "x2: " + ~bellParam[4]);
 	},
 	"/bellState");
 )
@@ -68,8 +71,10 @@ var pads;
 pads = Array.newClear(84); // my pad uses midi numbers up to 83
 
 ~noteOnFunc = {arg val, num, chan, src;
-	var node;
-	("note on num: " + num).postln;
+	var node, bellParam;
+	("note on num: " + ((num - 36) % 16)).postln;
+
+	bellParam = (num - 36) % 16;
 	node = pads.at(num);              // first assign to node the element of the array having as index the key number
 	                                 // if the node is not Nil then release the node and put nil in the correspondent element
 	if (node.notNil, {
@@ -80,7 +85,7 @@ pads = Array.newClear(84); // my pad uses midi numbers up to 83
 	// if the node is not Nil means that the correpondent synth is already playing
 	// if the node is Nil then create an instance of risset synth with the correct arguments and using the tail method
 
-	node = Synth.tail(nil, \risset, [\freq, num.midicps]); // here we should use the parameters received from OSCdef
+	node = Synth.tail(nil, \risset, [\freq, ~bellParam[bellParam*3 + 2], \amp, ~bellParam[ (bellParam*3) + 1] * 0.1, \dur, ~bellParam[bellParam*3]]); // here we should use the parameters received from OSCdef
 
 	// assign the instance to the correspondent element of the array
 	pads.put(num, node);
