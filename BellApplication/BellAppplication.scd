@@ -24,9 +24,6 @@ SynthDef(\risset, {
 }).add;
 )
 
-a = Synth(\risset, [\freq, 72.midicps, \dur, 10])
-a.free
-
 
 ~bellParam = Array.newClear(37); // stores the parameters of all the bells
 

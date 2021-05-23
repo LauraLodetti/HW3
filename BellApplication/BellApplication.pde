@@ -375,5 +375,7 @@ void oscEvent(OscMessage scMessage) {
   if (scMessage.addrPattern().equals("/activeBell")) {
     println("active bell is: ", scMessage.get(1).intValue());
     // the the right bell on
+    int bellNumber = scMessage.get(1).intValue();
+    bells[bellNumber].setOn(bells[bellNumber].keyBell);
   }
 }
