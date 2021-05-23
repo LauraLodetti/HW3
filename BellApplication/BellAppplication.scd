@@ -6,6 +6,7 @@ NetAddr("127.0.0.1",57120);
 
 
 // Bell (Risset's synthetized bell)
+// from C2 130.8 Hz to C5 1046.5 Hz
 (
 SynthDef(\risset, {
 	arg out= 0, pan= 0, freq= 400, amp= 0.1, dur= 5, t_trig=1;
@@ -27,25 +28,37 @@ a = Synth(\risset, [\freq, 72.midicps, \dur, 10])
 a.free
 
 
+// a receiver that plays the bells selected from processing
 (
 OSCdef('OSCreceiver',
 	{
 		arg msg;
 		var width, x, y;
 
-		// these are the x, y and width of the first bell. need to add all the others
-		// for now I just post the values of the first bell to check that the comunication works
-		// need to normalize the values and use them on the synth
 		x = msg[1];
 		y = msg[2];
 		width = msg[3];
 		postln("x: " + x + "y: " + y + "width: " + width);
 		f = Synth(\risset, [\freq, width, \amp, y * 0.1, \dur, x])
 	},
-	"/bellState"); // the slash is necessary for it to be recognixed as an OSC path
+	"/myBellState");
 )
 
-postln(x1);
+(
+OSCdef('OSCreceiver2',
+	{
+		arg msg;
+		var width, x, y;
+
+		// these are the x, y and width of the first bell. need to add all the others
+		x = msg[1];
+		y = msg[2];
+		width = msg[3];
+		postln("x: " + x + "y: " + y + "width: " + width);
+		//f = Synth(\risset, [\freq, width, \amp, y * 0.1, \dur, x])
+	},
+	"/bellState");
+)
 
 
 

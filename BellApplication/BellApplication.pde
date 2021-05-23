@@ -104,7 +104,7 @@ void draw() {
   for (Bell b : bells) {
     bellState.add((b.xBell / width) * 10);
     bellState.add(-(b.yBell - height) / height);
-    bellState.add(b.widthBell);
+    bellState.add(1046 - (b.widthBell * 1.31)); // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
   }
   oscP5.send(bellState, myRemoteLocation);
 }
@@ -272,11 +272,11 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
-    if(isMouseOver && widthBell - 3*event.getCount() >= 20 && widthBell - 3*event.getCount() <= 4000){ // minimum width is 20 and max width is 4000 (arbitrary values)
+    if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){ // minimum width is 20 and max width is 700 (arbitrary values)
        widthBell = imageBell.width;
        // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
        imageBell = loadImage(name);
-       widthBell = widthBell - 3*event.getCount(); // 3 is a random number to not have too slow increasing/decreasing
+       widthBell = widthBell - 6*event.getCount(); // 3 is a random number to not have too slow increasing/decreasing
        imageBell.resize(widthBell, 0);
     }
   }
@@ -294,7 +294,7 @@ class Bell {
         myMessage = new OscMessage("/myBellState");
         myMessage.add((xBell / width) * 10);
         myMessage.add( -(yBell - height) / height); // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
-        myMessage.add(widthBell);
+        myMessage.add(1046 - (widthBell * 1.31));    // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);
       }
