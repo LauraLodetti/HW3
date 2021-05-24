@@ -41,9 +41,6 @@ void setup(){
    textFont(font);
    textAlign(CENTER, CENTER);
    
-   // Select a default background
-   index = 0;
-   
    //used to place the bells in a line, at the same distance one from the other.
    float xInitDistance = width / (num+1.0); 
    float yInit = height / 2.0;
@@ -96,8 +93,8 @@ void draw() {
   if(index != 0)
     triangle(10, 360, 24, 346, 24, 374);
   if(index != 3)
-    triangle(1270, 360, 1256, 346, 1256, 374); 
-    
+    triangle(1270, 360, 1256, 346, 1256, 374);
+
   OscMessage bellState = new OscMessage("/bellState");
   for (Bell b : bells) {
     bellState.add((b.xBell / width) * 10);
@@ -162,13 +159,32 @@ void keyPressed(){
   for (Bell b:bells){
     b.setOn(key);
   }
+  if(key == '1'){
+    presets[0].isMouseOver = true;
+    presets[0].mousePressed();
+  }
+  if(key == '2'){
+    presets[1].isMouseOver = true;
+    presets[1].mousePressed();
+  }
+  if(key == '3'){
+    presets[2].isMouseOver = true;
+    presets[2].mousePressed();
+  }
+  if(key == '4'){
+    presets[3].isMouseOver = true;
+    presets[3].mousePressed();
+  }
+  if(key == DELETE){
+    println("Reset");
+    setup();
+  }
 }
 void keyReleased(){
   for (Bell b:bells){
     b.setOff(key);
   }
 }
-
 
 void update(){
   //println("Background "+str(index%4));
@@ -217,7 +233,7 @@ class Bell {
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
-    //widthBell = imageBell.width;
+    widthBell = imageBell.width;
     imageBell.resize(80,0);
   }
   
@@ -276,28 +292,24 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
-    if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){ // minimum width is 20 and max width is 700 (arbitrary values)
+    if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){   // minimum width is 20 and max width is 700 (arbitrary values)
        widthBell = imageBell.width;
        // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
        imageBell = loadImage(name);
-       widthBell = widthBell - 3*event.getCount(); // 3 is a random number to not have too slow increasing/decreasing
+       widthBell = widthBell - 6*event.getCount(); // 6 is a random number to not have too slow increasing/decreasing
        imageBell.resize(widthBell, 0);
     }
   }
   /* when the right key is pressed we set the bell on */
   void setOn(char key) {
     if (key == keyBell) {
-      if(isBellOn){
-        isBellOn= false;
-        R = 200;
-      }
-      else{
+      if(!isBellOn){
         isBellOn= true;
         R = 100;
         
         myMessage = new OscMessage("/myBellState");
         myMessage.add((xBell / width) * 10);
-        myMessage.add( -(yBell - height) / height); // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
+        myMessage.add( -(yBell - height) / height);  // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
         myMessage.add(1046 - (widthBell * 1.31));    // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);
@@ -367,6 +379,7 @@ class Button {
     switch(name){
       case "Preset 1":
         println("preset 1");
+        setup();
         bells[0].redraw(90,120,20, true);
         bells[1].redraw(200,300,40, true);
         bells[2].redraw(500,600,200, true);
@@ -377,7 +390,12 @@ class Button {
       case "Preset 2": println("preset 2"); break;
       case "Preset 3": println("preset 3"); break;
       case "Preset 4": println("preset 4"); break;
-      case "Reset": println("Reset"); setup(); break;
+      case "Reset": 
+        println("Reset");
+        // Select a default background
+        index = 0;
+        setup();
+        break;
       default: break;
     }
   }
