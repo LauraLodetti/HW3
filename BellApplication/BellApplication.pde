@@ -280,7 +280,7 @@ class Bell {
        widthBell = imageBell.width;
        // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
        imageBell = loadImage(name);
-       widthBell = widthBell - 6*event.getCount(); // 3 is a random number to not have too slow increasing/decreasing
+       widthBell = widthBell - 3*event.getCount(); // 3 is a random number to not have too slow increasing/decreasing
        imageBell.resize(widthBell, 0);
     }
   }
