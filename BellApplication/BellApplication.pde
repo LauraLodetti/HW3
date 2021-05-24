@@ -7,12 +7,10 @@
    QWER |
    ASDF |--> these keys allow to play the bells
    ZXCV |
-   (other possib: x coord = freq, y coord volume, dimension duration, transparency harmonics)
 */
 
 /* wwwww Notes. At the moment: wwwwww
 - bells are drawn in order in the array --> the first will be always BEHIND the last in order of index
-- overlapping bells can be dragged together and sometimes it is difficult not to
 - the increasing size is done with RELOADING the image in order to not lose quality, but it is slow
 - bells can't be selected simoultaneously
 */
@@ -38,6 +36,7 @@ void setup(){
    size(1280,720);
    noStroke();
    
+   //font used for the bells labels
    font = createFont("Arial Bold", 18);
    textFont(font);
    textAlign(CENTER, CENTER);
@@ -46,7 +45,6 @@ void setup(){
    index = 0;
    
    //used to place the bells in a line, at the same distance one from the other.
-   // **** for very high numbers does not look even though ****
    float xInitDistance = width / (num+1.0); 
    float yInit = height / 2.0;
    // creating the bells
@@ -87,13 +85,13 @@ void draw() {
   for (Bell b : bells) {
     b.display();
   }
-  
+  //displaying preset buttons
   for (Button p: presets){
     p.display();
   }
-  
+  //displaying reset button
   reset.display();
-  
+  //displaying buttons to change backgrounds
   fill(0);
   if(index != 0)
     triangle(10, 360, 24, 346, 24, 374);
@@ -165,6 +163,12 @@ void keyPressed(){
     b.setOn(key);
   }
 }
+void keyReleased(){
+  for (Bell b:bells){
+    b.setOff(key);
+  }
+}
+
 
 void update(){
   //println("Background "+str(index%4));
@@ -297,6 +301,15 @@ class Bell {
         myMessage.add(1046 - (widthBell * 1.31));    // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);
+      }
+    }
+  }
+  
+  void setOff(char key){
+    if (key == keyBell) {
+      if(isBellOn){
+        isBellOn= false;
+        R = 200;
       }
     }
   }
