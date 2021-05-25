@@ -3,6 +3,7 @@ MIDIClient.init;  // initialize a MIDI client object
 MIDIIn.connectAll;
 NetAddr("127.0.0.1",57120);
 n = NetAddr("127.0.0.1",12000);
+~bellParam = Array.newClear(37); // stores the parameters of all the bells
 )
 
 
@@ -24,9 +25,6 @@ SynthDef(\risset, {
 	Out.ar(out, Pan2.ar(FreeVerb.ar(src, mix: 0.33, room: 0.5), pan));
 }).add;
 )
-
-
-~bellParam = Array.newClear(37); // stores the parameters of all the bells
 
 
 // a receiver that plays the bells selected from processing

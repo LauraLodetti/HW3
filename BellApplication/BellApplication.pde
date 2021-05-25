@@ -388,7 +388,21 @@ class Button {
         continue for all the bells we want to change
         */
         break;
-      case "Preset 2": println("preset 2"); break;
+      case "Preset 2":   // chromatic scale
+        println("preset 2"); 
+        bells[0].redraw(100,360,184, true);  // C6
+        bells[1].redraw(250,360,175, true);  // C6#
+        bells[2].redraw(400,360,165, true);  // D6
+        bells[3].redraw(550,360,155, true);  // D6#
+        bells[4].redraw(680,360,145, true);  // E6
+        bells[5].redraw(800,360,133, true);  // F6
+        bells[6].redraw(910,360,121, true);  // F6#
+        bells[7].redraw(1010,360,109, true); // G6
+        bells[8].redraw(1090,360,96, true);  // G6#
+        bells[9].redraw(1160,360,81, true);  // A6
+        bells[10].redraw(1210,360,66, true); // A6#
+        bells[11].redraw(1250,360,50, true); // B6
+        break;
       case "Preset 3": println("preset 3"); break;
       case "Preset 4": println("preset 4"); break;
       case "Reset": 
