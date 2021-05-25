@@ -403,11 +403,14 @@ class Button {
 }
 
 void oscEvent(OscMessage scMessage) {
-  println("received a message");
   if (scMessage.addrPattern().equals("/activeBell")) {
     println("active bell is: ", scMessage.get(1).intValue());
     // the the right bell on
     int bellNumber = scMessage.get(1).intValue();
     bells[bellNumber].setOn(bells[bellNumber].keyBell);
+  }
+  if (scMessage.addrPattern().equals("/turnOffBell")) {
+    int bellNumber = scMessage.get(1).intValue();
+    bells[bellNumber].setOff(bells[bellNumber].keyBell);
   }
 }

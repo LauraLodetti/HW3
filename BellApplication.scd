@@ -2,6 +2,7 @@
 MIDIClient.init;  // initialize a MIDI client object
 MIDIIn.connectAll;
 NetAddr("127.0.0.1",57120);
+n = NetAddr("127.0.0.1",12000);
 )
 
 
@@ -61,7 +62,6 @@ OSCdef('OSCreceiver2',
 )
 
 
-n = NetAddr("127.0.0.1",12000);
 (
 var pads;
 // create a new array with all slots filled with nils
@@ -85,7 +85,6 @@ pads = Array.newClear(84); // my pad uses midi numbers up to 83
 	node = Synth.tail(nil, \risset, [\freq, ~bellParam[bellParam*3 + 2], \amp, ~bellParam[ (bellParam*3) + 1] * 0.1, \dur, ~bellParam[bellParam*3]]);
 	// assign the instance to the correspondent element of the array
 	pads.put(num, node);
-
 	n.sendMsg("/activeBell" , \bellNumber, bellParam);
 };
 
@@ -94,8 +93,9 @@ a = MIDIFunc.noteOn(func:~noteOnFunc);
 
 // now we need to write the note off function
 ~noteOffFunc = {arg val, num, chan, src;
-	var node;
+	var node, bellParam;
 	node = pads.at(num);
+	bellParam = (num - 36) % 16;
 
 	if (node.notNil, {
 		node.set(\gate,0);
@@ -103,6 +103,7 @@ a = MIDIFunc.noteOn(func:~noteOnFunc);
 		pads.put(num, nil);
 	});
 	("note off num: " + num).postln;
+	n.sendMsg("/turnOffBell" , \bellNumber, bellParam);
 };
 
 b = MIDIFunc.noteOff(func:~noteOffFunc);
