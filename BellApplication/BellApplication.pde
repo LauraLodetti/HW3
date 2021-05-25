@@ -292,12 +292,9 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
+    widthBell = imageBell.width;
     if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){   // minimum width is 20 and max width is 700 (arbitrary values)
-       widthBell = imageBell.width;
-       // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
-       imageBell = loadImage(name);
-       widthBell = widthBell - 6*event.getCount(); // 6 is a random number to not have too slow increasing/decreasing
-       imageBell.resize(widthBell, 0);
+       redraw(xBell, yBell, widthBell - 6*event.getCount(), false);
     }
   }
   /* when the right key is pressed we set the bell on */
@@ -329,8 +326,12 @@ class Bell {
   void redraw(float x, float y, int newWidth, boolean on){
     xBell = x;
     yBell = y;
-    if(on)
+    if(on){
+      // set on to send osc messages
       setOn(keyBell);
+      // set off to reset the color
+      setOff(keyBell);
+    }
     widthBell = newWidth;
     // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
     imageBell = loadImage(name);
