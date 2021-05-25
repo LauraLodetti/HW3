@@ -99,7 +99,7 @@ void draw() {
   for (Bell b : bells) {
     bellState.add((b.xBell / width) * 10);
     bellState.add(-(b.yBell - height) / height);
-    bellState.add(1046 - (b.widthBell * 1.31)); // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
+    bellState.add(2328 - (b.widthBell * 6.98)); // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
   }
   oscP5.send(bellState, myRemoteLocation);
 }
@@ -233,7 +233,7 @@ class Bell {
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
-    widthBell = imageBell.width;
+    //widthBell = imageBell.width;
     imageBell.resize(80,0);
   }
   
@@ -293,7 +293,7 @@ class Bell {
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
     widthBell = imageBell.width;
-    if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){   // minimum width is 20 and max width is 700 (arbitrary values)
+    if(isMouseOver && widthBell - 6*event.getCount() >= 34 && widthBell - 6*event.getCount() <= 300){   // minimum width is 34 and max width is 300 (chosen to respect the frequency range)
        redraw(xBell, yBell, widthBell - 6*event.getCount(), false);
     }
   }
@@ -307,7 +307,7 @@ class Bell {
         myMessage = new OscMessage("/myBellState");
         myMessage.add((xBell / width) * 10);
         myMessage.add( -(yBell - height) / height);  // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
-        myMessage.add(1046 - (widthBell * 1.31));    // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
+        myMessage.add(2328 - (widthBell * 6.98));    // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);
       }
@@ -412,5 +412,5 @@ void oscEvent(OscMessage scMessage) {
   if (scMessage.addrPattern().equals("/turnOffBell")) {
     int bellNumber = scMessage.get(1).intValue();
     bells[bellNumber].setOff(bells[bellNumber].keyBell);
-  }
+  }  
 }

@@ -56,7 +56,7 @@ OSCdef('OSCreceiver2',
 			~bellParam[i] = msg[i+1];
 		});
 
-		postln("x1: " + ~bellParam[1] + "x2: " + ~bellParam[4]);
+		//postln("x1: " + ~bellParam[1] + "width: " + ~bellParam[2]);
 	},
 	"/bellState");
 )
