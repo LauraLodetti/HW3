@@ -197,8 +197,7 @@ void play(){
 }
 
 void update(){
-  //println("Background "+str(index%4));
-  switch(index % 4){
+  switch(index){
     case 0:
       PImage image0 = loadImage("auditorium.jpg");
       background(image0);
@@ -210,8 +209,8 @@ void update(){
       fill(0);
       break;
     case 2: 
-      //PImage image2 = loadImage("");
-      background(200);
+      PImage image2 = loadImage("interno_campanile.jpg");
+      background(image2);
       fill(0);
       break;
     case 3: 
@@ -259,7 +258,6 @@ class Bell {
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
-    //widthBell = imageBell.width;
     imageBell.resize(80,0);
   }
   
@@ -317,8 +315,6 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
-    //widthBell = imageBell.width;
-    widthBell = imageBell.width;
     if(isMouseOver && widthBell - 6*event.getCount() >= 34 && widthBell - 6*event.getCount() <= 300){   // minimum width is 34 and max width is 300 (chosen to respect the frequency range)
        redraw(xBell, yBell, widthBell - 6*event.getCount(), false);
     }
