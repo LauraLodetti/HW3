@@ -318,6 +318,7 @@ class Bell {
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
     //widthBell = imageBell.width;
+    widthBell = imageBell.width;
     if(isMouseOver && widthBell - 6*event.getCount() >= 34 && widthBell - 6*event.getCount() <= 300){   // minimum width is 34 and max width is 300 (chosen to respect the frequency range)
        redraw(xBell, yBell, widthBell - 6*event.getCount(), false);
     }
@@ -403,8 +404,8 @@ class Button {
   
   void mousePressed(){
     switch(name){
-      case "Preset 1": // chromatic scale
-        println("preset 1"); 
+      case "Preset 1":
+        println("Chromatic scale"); 
         bells[0].redraw(100,360,184, true);  // C6
         bells[1].redraw(250,360,175, true);  // C6#
         bells[2].redraw(400,360,165, true);  // D6
@@ -418,9 +419,11 @@ class Button {
         bells[10].redraw(1210,360,66, true); // A6#
         bells[11].redraw(1250,360,50, true); // B6
         break;
-      
-      case "Preset 2": println("preset 2"); break;
-      
+
+      case "Preset 2":
+        println("preset 2"); 
+        break;
+        
       case "Preset 3": println("preset 3"); break;
       
       case "Preset 4": println("preset 4"); break;
