@@ -30,6 +30,7 @@ PFont font;
 Bell[] bells = new Bell[num];
 Button[] presets = new Button[pres];
 Button reset = new Button(1160, 660, 100, "Reset");
+Button play = new Button(20, 660, 100, "Play");
 
 
 void setup(){
@@ -88,6 +89,8 @@ void draw() {
   }
   //displaying reset button
   reset.display();
+  //displaying play button
+  play.display();
   //displaying buttons to change backgrounds
   fill(0);
   if(index != 0)
@@ -99,7 +102,7 @@ void draw() {
   for (Bell b : bells) {
     bellState.add((b.xBell / width) * 10);
     bellState.add(-(b.yBell - height) / height);
-    bellState.add(1046 - (b.widthBell * 1.31)); // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
+    bellState.add(2328 - (b.widthBell * 6.98)); // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
   }
   oscP5.send(bellState, myRemoteLocation);
 }
@@ -113,6 +116,7 @@ void mouseMoved() {
     b.mouseMoved();
   }
   reset.mouseMoved();
+  play.mouseMoved();
 }
 void mousePressed() {
   for (Bell b:bells){
@@ -124,6 +128,8 @@ void mousePressed() {
   }
   if(reset.isMouseOver)
     reset.mousePressed();
+  if(play.isMouseOver)
+    play();
    
   if(mouseX > 10 && mouseX < 24 &&
      mouseY > 346 && mouseY < 374 && index>0){
@@ -186,14 +192,34 @@ void keyReleased(){
   }
 }
 
+void play(){
+  println("Play bells");
+}
+
 void update(){
   //println("Background "+str(index%4));
   switch(index % 4){
-    case 0: background(255); break;
-    case 1: background(50); break;
-    case 2: background(100); break;
-    case 3: background(150); break;
-    default: background(255); break;
+    case 0:
+      PImage image0 = loadImage("auditorium.jpg");
+      background(image0);
+      fill(255);
+      break;
+    case 1: 
+      PImage image1 = loadImage("arena.jpg");
+      background(image1);
+      fill(0);
+      break;
+    case 2: 
+      //PImage image2 = loadImage("");
+      background(200);
+      fill(0);
+      break;
+    case 3: 
+      //PImage image3 = loadImage("");
+      background(100);
+      fill(0);
+      break;
+    default: fill(0); break;
   }
 }
 
@@ -233,7 +259,7 @@ class Bell {
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
-    widthBell = imageBell.width;
+    //widthBell = imageBell.width;
     imageBell.resize(80,0);
   }
   
@@ -243,7 +269,6 @@ class Bell {
     tint(R,255,255,transparency);
     // image takes as input the coordinate of the upper left corner of the image.
     image(imageBell, xBell-(imageBell.width / 2.0), yBell-(imageBell.height / 2.0));
-    fill(0);
     text(letterBell, xBell, yBell-imageBell.height/2.0-10);
   }
   
@@ -292,8 +317,8 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
-    widthBell = imageBell.width;
-    if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){   // minimum width is 20 and max width is 700 (arbitrary values)
+    //widthBell = imageBell.width;
+    if(isMouseOver && widthBell - 6*event.getCount() >= 34 && widthBell - 6*event.getCount() <= 300){   // minimum width is 34 and max width is 300 (chosen to respect the frequency range)
        redraw(xBell, yBell, widthBell - 6*event.getCount(), false);
     }
   }
@@ -307,7 +332,7 @@ class Bell {
         myMessage = new OscMessage("/myBellState");
         myMessage.add((xBell / width) * 10);
         myMessage.add( -(yBell - height) / height);  // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
-        myMessage.add(1046 - (widthBell * 1.31));    // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
+        myMessage.add(2328 - (widthBell * 6.98));    // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);
       }
@@ -365,8 +390,8 @@ class Button {
   }
   
   void mouseMoved(){
-    if (mouseX>(x) && mouseX<(x+dim) &&
-      mouseY>(y) && mouseY<(y+(dim/2))){
+    if (mouseX > x && mouseX < (x+dim) &&
+      mouseY > y && mouseY < (y+(dim/2))){
       isMouseOver=true;
       R = 230;
     }
@@ -378,36 +403,49 @@ class Button {
   
   void mousePressed(){
     switch(name){
-      case "Preset 1":
-        println("preset 1");
-        setup();
-        bells[0].redraw(90,120,20, true);
-        bells[1].redraw(200,300,40, true);
-        bells[2].redraw(500,600,200, true);
-        /*
-        continue for all the bells we want to change
-        */
+      case "Preset 1": // chromatic scale
+        println("preset 1"); 
+        bells[0].redraw(100,360,184, true);  // C6
+        bells[1].redraw(250,360,175, true);  // C6#
+        bells[2].redraw(400,360,165, true);  // D6
+        bells[3].redraw(550,360,155, true);  // D6#
+        bells[4].redraw(680,360,145, true);  // E6
+        bells[5].redraw(800,360,133, true);  // F6
+        bells[6].redraw(910,360,121, true);  // F6#
+        bells[7].redraw(1010,360,109, true); // G6
+        bells[8].redraw(1090,360,96, true);  // G6#
+        bells[9].redraw(1160,360,81, true);  // A6
+        bells[10].redraw(1210,360,66, true); // A6#
+        bells[11].redraw(1250,360,50, true); // B6
         break;
+      
       case "Preset 2": println("preset 2"); break;
+      
       case "Preset 3": println("preset 3"); break;
+      
       case "Preset 4": println("preset 4"); break;
+      
       case "Reset": 
         println("Reset");
         // Select a default background
         index = 0;
         setup();
         break;
+      
       default: break;
     }
   }
 }
 
 void oscEvent(OscMessage scMessage) {
-  println("received a message");
   if (scMessage.addrPattern().equals("/activeBell")) {
     println("active bell is: ", scMessage.get(1).intValue());
     // the the right bell on
     int bellNumber = scMessage.get(1).intValue();
     bells[bellNumber].setOn(bells[bellNumber].keyBell);
+  }
+  if (scMessage.addrPattern().equals("/turnOffBell")) {
+    int bellNumber = scMessage.get(1).intValue();
+    bells[bellNumber].setOff(bells[bellNumber].keyBell);
   }
 }
