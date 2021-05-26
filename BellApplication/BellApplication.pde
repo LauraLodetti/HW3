@@ -104,6 +104,7 @@ void draw() {
     bellState.add(-(b.yBell - height) / height);
     bellState.add(2328 - (b.widthBell * 6.98)); // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
   }
+  bellState.add(index);
   oscP5.send(bellState, myRemoteLocation);
 }
 
@@ -204,7 +205,7 @@ void update(){
       fill(255);
       break;
     case 1: 
-      PImage image1 = loadImage("arena.jpg");
+      PImage image1 = loadImage("church.jpg");
       background(image1);
       fill(0);
       break;
@@ -214,8 +215,8 @@ void update(){
       fill(0);
       break;
     case 3: 
-      //PImage image3 = loadImage("");
-      background(100);
+      PImage image3 = loadImage("mountain.jpg");
+      background(image3);
       fill(0);
       break;
     default: fill(0); break;
