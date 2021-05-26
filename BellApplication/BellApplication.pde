@@ -99,7 +99,7 @@ void draw() {
   for (Bell b : bells) {
     bellState.add((b.xBell / width) * 10);
     bellState.add(-(b.yBell - height) / height);
-    bellState.add(1046 - (b.widthBell * 1.31)); // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
+    bellState.add(2328 - (b.widthBell * 6.98)); // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
   }
   oscP5.send(bellState, myRemoteLocation);
 }
@@ -233,7 +233,7 @@ class Bell {
     letterBell = l;
     imageBell = loadImage(name);
     heightBell = imageBell.height;
-    widthBell = imageBell.width;
+    //widthBell = imageBell.width;
     imageBell.resize(80,0);
   }
   
@@ -292,12 +292,9 @@ class Bell {
   
   /* when the mouse weel is turned, if over a bell, the bell gets bigger/smaller. the WIDTH is SUMMED to the value obtained from the wheel itself */
   void mouseWheel(MouseEvent event){
-    if(isMouseOver && widthBell - 6*event.getCount() >= 20 && widthBell - 6*event.getCount() <= 700){   // minimum width is 20 and max width is 700 (arbitrary values)
-       widthBell = imageBell.width;
-       // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
-       imageBell = loadImage(name);
-       widthBell = widthBell - 6*event.getCount(); // 6 is a random number to not have too slow increasing/decreasing
-       imageBell.resize(widthBell, 0);
+    widthBell = imageBell.width;
+    if(isMouseOver && widthBell - 6*event.getCount() >= 34 && widthBell - 6*event.getCount() <= 300){   // minimum width is 34 and max width is 300 (chosen to respect the frequency range)
+       redraw(xBell, yBell, widthBell - 6*event.getCount(), false);
     }
   }
   /* when the right key is pressed we set the bell on */
@@ -310,7 +307,7 @@ class Bell {
         myMessage = new OscMessage("/myBellState");
         myMessage.add((xBell / width) * 10);
         myMessage.add( -(yBell - height) / height);  // amplitude goes from 0 on the bottom of the window to 1 at the top of the window6
-        myMessage.add(1046 - (widthBell * 1.31));    // We rescale the width to correspond to a frequency varying from C2 130Hz, to C5 1046Hz
+        myMessage.add(2328 - (widthBell * 6.98));    // We rescale the width to correspond to a frequency varying from C4 262Hz, to C7 2093Hz
         println("Sending OSC message", myMessage);
         oscP5.send(myMessage, myRemoteLocation);
       }
@@ -329,8 +326,12 @@ class Bell {
   void redraw(float x, float y, int newWidth, boolean on){
     xBell = x;
     yBell = y;
-    if(on)
+    if(on){
+      // set on to send osc messages
       setOn(keyBell);
+      // set off to reset the color
+      setOff(keyBell);
+    }
     widthBell = newWidth;
     // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
     imageBell = loadImage(name);
@@ -387,7 +388,21 @@ class Button {
         continue for all the bells we want to change
         */
         break;
-      case "Preset 2": println("preset 2"); break;
+      case "Preset 2":   // chromatic scale
+        println("preset 2"); 
+        bells[0].redraw(100,360,184, true);  // C6
+        bells[1].redraw(250,360,175, true);  // C6#
+        bells[2].redraw(400,360,165, true);  // D6
+        bells[3].redraw(550,360,155, true);  // D6#
+        bells[4].redraw(680,360,145, true);  // E6
+        bells[5].redraw(800,360,133, true);  // F6
+        bells[6].redraw(910,360,121, true);  // F6#
+        bells[7].redraw(1010,360,109, true); // G6
+        bells[8].redraw(1090,360,96, true);  // G6#
+        bells[9].redraw(1160,360,81, true);  // A6
+        bells[10].redraw(1210,360,66, true); // A6#
+        bells[11].redraw(1250,360,50, true); // B6
+        break;
       case "Preset 3": println("preset 3"); break;
       case "Preset 4": println("preset 4"); break;
       case "Reset": 
@@ -402,11 +417,14 @@ class Button {
 }
 
 void oscEvent(OscMessage scMessage) {
-  println("received a message");
   if (scMessage.addrPattern().equals("/activeBell")) {
     println("active bell is: ", scMessage.get(1).intValue());
     // the the right bell on
     int bellNumber = scMessage.get(1).intValue();
     bells[bellNumber].setOn(bells[bellNumber].keyBell);
   }
+  if (scMessage.addrPattern().equals("/turnOffBell")) {
+    int bellNumber = scMessage.get(1).intValue();
+    bells[bellNumber].setOff(bells[bellNumber].keyBell);
+  }  
 }
