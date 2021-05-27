@@ -48,12 +48,12 @@ OSCdef('OSCreceiver2',
 		arg msg;
 		var width, x, y;
 
-		for (0, 35, {
+		for (0, 36, {
 			arg i;
 			~bellParam[i] = msg[i+1];
 		});
 
-		//postln("x1: " + ~bellParam[1] + "width: " + ~bellParam[2]);
+		//postln("index: " + ~bellParam[36]);
 	},
 	"/bellState");
 )
@@ -130,16 +130,25 @@ q.value(); // used to free the MIDIFuncs
 // implement a routine to play the bell configuration set on processing
 (
 r = Routine({
-	10.do{
+	5.do{
 		var bellNumber = 12.rand;
 		f = Synth(\risset, [\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3]]);
 		// within a routine, wait will yield the number so that the clock  wait for this many beats. Outside a Routine, this trows an error.
-		//~bellParam[bellNumber*3].wait; // the durations are too long => boring
 		n.sendMsg("/activeBell" , \bellNumber, bellNumber);
-		1.wait;
+		exprand(0.5,3).wait;
 		n.sendMsg("/turnOffBell" , \bellNumber, bellNumber);
 	}});
 )
+(
+OSCdef('OSCreceiver3',
+	{
+		arg msg;
+		r.reset;
+		r.play();
+	},
+	"playBells");
+)
+
 r.play();
 r.reset;
 r.stop;

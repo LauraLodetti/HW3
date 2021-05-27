@@ -194,25 +194,26 @@ void keyReleased(){
 }
 
 void play(){
-  println("Play bells");
+  OscMessage playBellsMessage = new OscMessage("/playBells");
+  oscP5.send(playBellsMessage, myRemoteLocation);
 }
 
 void update(){
   switch(index){
     case 0:
-      PImage image0 = loadImage("auditorium.jpg");
+      PImage image0 = loadImage("interno_campanile.jpg");
       background(image0);
-      fill(255);
+      fill(0);
       break;
     case 1: 
       PImage image1 = loadImage("church.jpg");
       background(image1);
-      fill(0);
+      fill(255);
       break;
     case 2: 
-      PImage image2 = loadImage("interno_campanile.jpg");
+      PImage image2 = loadImage("auditorium.jpg");
       background(image2);
-      fill(0);
+      fill(255);
       break;
     case 3: 
       PImage image3 = loadImage("mountain.jpg");
