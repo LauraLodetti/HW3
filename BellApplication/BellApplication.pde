@@ -240,8 +240,6 @@ class Bell {
   int widthBell = 80;
   // tint of the bell. Decreasing R to 200 when selecting a bell.
   int R = 230;
-  // transparency of the bell
-  int transparency = 255;
   // controls whether we are over the bell, and dragging (holding the mouse)
   boolean isMouseOver;
   boolean isBellHeld;
@@ -264,8 +262,8 @@ class Bell {
   
   // -- display method
   void display(){
-    // modifies the transparency of the image
-    tint(R,255,255,transparency);
+    // modifies the filter colour of the image
+    tint(R,255,255);
     // image takes as input the coordinate of the upper left corner of the image.
     image(imageBell, xBell-(imageBell.width / 2.0), yBell-(imageBell.height / 2.0));
     text(letterBell, xBell, yBell-imageBell.height/2.0-10);
@@ -379,7 +377,7 @@ class Button {
   
   // -- display method
   void display(){
-    // modifies the transparency of the image
+    // modifies the colour of the image
     fill(R);
     // rect containing the name of the preset
     rect(x, y, dim, dim/2, dim/8);
