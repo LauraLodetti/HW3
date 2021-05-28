@@ -79,6 +79,11 @@ void setup(){
 
 void draw() {
   update();
+  //displaying buttons to change backgrounds
+  if(index != 0)
+    triangle(10, 360, 24, 346, 24, 374);
+  if(index != 3)
+    triangle(1270, 360, 1256, 346, 1256, 374);
   //displaying bells and their text
   for (Bell b : bells) {
     b.display();
@@ -91,12 +96,6 @@ void draw() {
   reset.display();
   //displaying play button
   play.display();
-  //displaying buttons to change backgrounds
-  fill(0);
-  if(index != 0)
-    triangle(10, 360, 24, 346, 24, 374);
-  if(index != 3)
-    triangle(1270, 360, 1256, 346, 1256, 374);
 
   OscMessage bellState = new OscMessage("/bellState");
   for (Bell b : bells) {
@@ -208,7 +207,7 @@ void update(){
     case 1: 
       PImage image1 = loadImage("church.jpg");
       background(image1);
-      fill(255);
+      fill(200);
       break;
     case 2: 
       PImage image2 = loadImage("auditorium.jpg");
@@ -383,7 +382,7 @@ class Button {
     // modifies the transparency of the image
     fill(R);
     // rect containing the name of the preset
-    rect(x, y, dim, dim/2);
+    rect(x, y, dim, dim/2, dim/8);
     fill(0);
     text(name, x+(dim/2), y+(dim/4));
   }
