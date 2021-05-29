@@ -448,14 +448,28 @@ class Button {
         bells[4].redraw(550,360,145, true);  // E6  a medium
         bells[5].redraw(400,360,133, true);  // F6  s short
         bells[6].redraw(400,360,109, true);  // G6  d short
-        bells[7].redraw(400,360,81, true); // A6  f short
+        bells[7].redraw(400,360,81, true);   // A6  f short
         bells[8].redraw(600,360,221, true);  // G5  z medium        
         bells[9].redraw(800,360,184, true);  // C6  x long
         bells[10].redraw(650,360,165, true); // D6  c medium 
         bells[11].redraw(700,360,109, true); // G6   v long 
         break;
       
-      case "Preset 4": println("preset 4"); break;
+      case "Preset 4": 
+        println("Twinkle twinkle"); // to play: QQWWEER - AASSDDF - WWAASSZ - WWAASSZ - QQWWEER - AASSDDF
+        bells[0].redraw(400,240,184, true);  // C6  q medium
+        bells[1].redraw(500,260,109, true);  // G6  w medium
+        bells[2].redraw(450,250,81, true);   // A6  e medium
+        bells[3].redraw(900,320,109, true);  // G6  r long
+        bells[4].redraw(420,340,133, true);  // F6  a medium
+        bells[5].redraw(560,360,145, true);  // E6  s medium
+        bells[6].redraw(600,350,165, true);  // D6  d medium
+        bells[7].redraw(900,200,184, true);  // C6  f long
+        bells[8].redraw(1000,100,165, true); // D6  z long
+        bells[9].redraw(750,700,40, true);   // unused
+        bells[10].redraw(150,600,165, true); // unused
+        bells[11].redraw(1100,700,80, true); // unused
+        break;
       
       case "Reset": 
         println("Reset");
