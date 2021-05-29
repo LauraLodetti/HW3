@@ -416,7 +416,19 @@ class Button {
         break;
 
       case "Preset 2":
-        println("preset 2"); 
+        println("Frere Jacques"); // to play: Q W E Q - Q W E Q - E R V - E R V - D F D S A Q - C Z X - C Z X 
+        bells[0].redraw(680,340,184, true);  // C6  q medium
+        bells[1].redraw(675,350,165, true);  // D6  w medium
+        bells[2].redraw(550,360,145, true);  // E6  e medium
+        bells[3].redraw(900,360,133, true);  // F6  r long
+        bells[4].redraw(550,360,145, true);  // E6  a medium
+        bells[5].redraw(400,360,133, true);  // F6  s short
+        bells[6].redraw(400,360,109, true);  // G6  d short
+        bells[7].redraw(400,360,81, true); // A6  f short
+        bells[8].redraw(600,360,232, true);  // G5  z medium        
+        bells[9].redraw(800,360,184, true);  // C6  x long
+        bells[10].redraw(650,360,165, true); // D6  c medium 
+        bells[11].redraw(700,360,109, true); // G6   v long 
         break;
         
       case "Preset 3": println("preset 3"); break;
