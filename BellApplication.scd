@@ -5,8 +5,8 @@ NetAddr("127.0.0.1",57120);        // usedto receive messages from processing
 n = NetAddr("127.0.0.1",12000);    // used to send messages to processing
 ~bellParam = Array.newClear(37);   // stores the parameters of all the bells
 ~index;                            // indicates the background of the bells. Linked to the effect being played
-~bellTower = Buffer.read(s,"C:/Users/helac/Documents/Poli/CMLS/HW3-main/HW3/BellApplication/data/bellTower.wav");
-~mountain = Buffer.read(s,"C:/Users/helac/Documents/Poli/CMLS/HW3-main/HW3/BellApplication/data/Mountain.wav");
+~bellTower = Buffer.read(s, PathName.new("BellApplication/data/bellTower.wav").asAbsolutePath);
+~mountain = Buffer.read(s, PathName.new("BellApplication/data/Mountain.wav").asAbsolutePath);
 )
 
 // Bell (Risset's synthetized bell)
