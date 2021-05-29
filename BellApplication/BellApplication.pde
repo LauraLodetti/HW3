@@ -75,6 +75,9 @@ void setup(){
    // Initializing the Remote location
    myRemoteLocation = new NetAddress("127.0.0.1",57120);
    
+   OscMessage indexChange = new OscMessage("/indexChange");
+   indexChange.add(index);
+   oscP5.send(indexChange, myRemoteLocation);
 }
 
 void draw() {
@@ -130,16 +133,22 @@ void mousePressed() {
     reset.mousePressed();
   if(play.isMouseOver)
     play();
-   
+  
+  OscMessage indexChange = new OscMessage("/indexChange");
+  
   if(mouseX > 10 && mouseX < 24 &&
      mouseY > 346 && mouseY < 374 && index>0){
     index -= 1;
+    indexChange.add(index);
+    oscP5.send(indexChange, myRemoteLocation);
     update();
   }
   
   if(mouseX > 1256 && mouseX < 1270 &&
      mouseY > 346 && mouseY < 374 && index<3){
     index += 1;
+    indexChange.add(index);
+    oscP5.send(indexChange, myRemoteLocation);
     update();
   }
      
