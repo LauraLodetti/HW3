@@ -30,14 +30,12 @@ SynthDef(\risset, {
 	Out.ar(delayBus, src*delay);
 }).send(s);
 
-// a buffer used to play the background noises
- SynthDef(\backgroundNoise,
-	{
-		arg bufnum = 0;    // Number of the buffer to play
-		var sig;
-		sig = PlayBuf.ar(2, bufnum, 1, loop:1, doneAction:0); // we loop the signal
-		Out.ar(0, 1.3*sig);
- }).add;
+SynthDef(\reverb, {
+	arg outBus=0, inBus;
+	var input = In.ar(inBus,1);
+	16.do({input = AllpassC.ar(in:input, maxdelaytime:0.04, delaytime:{Rand(0.001,0.04)}.dup, decaytime:3)});
+	Out.ar(outBus, Pan2.ar(input));
+}).send(s);
 
 SynthDef(\delay, {
 	arg outBus=0, inBus;
@@ -48,13 +46,14 @@ SynthDef(\delay, {
 	Out.ar(outBus, Pan2.ar(output));
 }).send(s);
 
-
-SynthDef(\reverb, {
-	arg outBus=0, inBus;
-	var input = In.ar(inBus,1);
-	16.do({input = AllpassC.ar(in:input, maxdelaytime:0.04, delaytime:{Rand(0.001,0.04)}.dup, decaytime:3)});
-	Out.ar(outBus, Pan2.ar(input));
-}).send(s);
+// a buffer used to play the background noises
+ SynthDef(\backgroundNoise,
+	{
+		arg bufnum = 0;    // Number of the buffer to play
+		var sig;
+		sig = PlayBuf.ar(2, bufnum, 1, loop:1, doneAction:0); // we loop the signal
+		Out.ar(0, 1.3*sig);
+ }).add;
 )
 
 (
@@ -78,16 +77,16 @@ r = Routine({
 		var bellNumber = 12.rand; // number of the bell to be played
 
 		f.set(\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3], \t_trig, 1);
-		n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // turn on the bell
-		exprand(0.5,3).wait;                                 // randomly play bell of duration going from 0.5 to 3s
-		n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // turn off the bell
+		n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // visually turn on the bell on the GUI from processing
+		exprand(0.5,3).wait;                                 // randomly play bell of wait duration going from 0.5 to 3s
+		n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // visually turn off the bell on the GUI from processing
 	}});
 )
 
 r.stop; // manually stop the routine
 
 
-// a receiver that plays the bells selected from processing
+// a receiver that plays the bells selected from processing with teh effects from the selected background
 (
 OSCdef('OSCreceiver',
 	{
@@ -175,7 +174,7 @@ var pads;
 
 pads = Array.newClear(84); // create a new array with all slots filled with nils. Our pad goes up to pad number 83
 
-~noteOnFunc = {arg val, num, chan, src;
+~noteOnFunc = {arg val, num;
 	var node, bellParam;
 
 	bellParam = (num - 36) % 16;      // rescale the pad number from 0 to 15 so that it corresponds to the bells on processing
@@ -212,7 +211,7 @@ pads = Array.newClear(84); // create a new array with all slots filled with nils
 
 a = MIDIFunc.noteOn(func:~noteOnFunc);
 
-~noteOffFunc = {arg val, num, chan, src;
+~noteOffFunc = {arg val, num;
 	var node, bellParam;
 	node = pads.at(num);
 	bellParam = (num - 36) % 16;
