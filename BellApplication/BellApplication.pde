@@ -408,8 +408,23 @@ class Button {
   
   void mousePressed(){
     switch(name){
-      case "Preset 1":
-        println("Chromatic scale"); 
+      case "Preset 1": println("Major Scale"); 
+        bells[0].redraw(100,360,233, true);  // F5 <-
+        bells[1].redraw(250,360,221, true);  // G5 <-
+        bells[2].redraw(400,360,208, true);  // A5 <-
+        bells[3].redraw(550,360,191, true);  // B5 <-
+        bells[4].redraw(680,360,184, true);  // C6
+        bells[5].redraw(800,360,165, true);  // D6
+        bells[6].redraw(910,360,145, true);  // E6
+        bells[7].redraw(1010,360,133, true); // F6
+        bells[8].redraw(1090,360,109, true); // G6 
+        bells[9].redraw(1160,360,81, true);  // A6
+        bells[10].redraw(1210,360,50, true); // B6
+        bells[11].redraw(1250,360,35, true); // C7 
+        break;
+        
+
+      case "Preset 2":println("Chromatic scale"); 
         bells[0].redraw(100,360,184, true);  // C6
         bells[1].redraw(250,360,175, true);  // C6#
         bells[2].redraw(400,360,165, true);  // D6
@@ -423,9 +438,9 @@ class Button {
         bells[10].redraw(1210,360,66, true); // A6#
         bells[11].redraw(1250,360,50, true); // B6
         break;
-
-      case "Preset 2":
-        println("Frere Jacques"); // to play: Q W E Q - Q W E Q - E R V - E R V - D F D S A Q - C Z X - C Z X 
+        
+        
+      case "Preset 3": println("preset 3"); println("Frere Jacques"); // to play: Q W E Q - Q W E Q - E R V - E R V - D F D S A Q - C Z X - C Z X 
         bells[0].redraw(680,340,184, true);  // C6  q medium
         bells[1].redraw(675,350,165, true);  // D6  w medium
         bells[2].redraw(550,360,145, true);  // E6  e medium
@@ -434,13 +449,11 @@ class Button {
         bells[5].redraw(400,360,133, true);  // F6  s short
         bells[6].redraw(400,360,109, true);  // G6  d short
         bells[7].redraw(400,360,81, true); // A6  f short
-        bells[8].redraw(600,360,232, true);  // G5  z medium        
+        bells[8].redraw(600,360,221, true);  // G5  z medium        
         bells[9].redraw(800,360,184, true);  // C6  x long
         bells[10].redraw(650,360,165, true); // D6  c medium 
         bells[11].redraw(700,360,109, true); // G6   v long 
         break;
-        
-      case "Preset 3": println("preset 3"); break;
       
       case "Preset 4": println("preset 4"); break;
       
