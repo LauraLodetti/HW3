@@ -73,14 +73,53 @@ f = Synth.before(g, \risset, [\t_trig,0 ,\reverbBus, b, \delayBus, c]);
 // implement a routine to play the bell configuration set on processing
 (
 r = Routine({
-	7.do{
-		var bellNumber = 12.rand; // number of the bell to be played
+	arg preset;
 
-		f.set(\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3], \t_trig, 1);
-		n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // visually turn on the bell on the GUI from processing
-		exprand(0.5,3).wait;                                 // randomly play bell of wait duration going from 0.5 to 3s
-		n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // visually turn off the bell on the GUI from processing
-	}});
+	switch(preset,
+		3, {
+			t = Task({
+				var arr = [0,1,2,0,0,1,2,0,2,3,11,2,3,11,6,7,6,5,4,0,6,7,6,5,4,0,10,8,9,10,8,9];
+				arr.do{
+					arg bellNumber;
+
+					f.set(\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3], \t_trig, 1);
+					n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // turn on the bell
+					1.wait;                                 // randomly play bell of duration going from 0.5 to 3s
+					n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // turn off the bell
+				}
+			});
+			32.do{t.start; 0.5.wait(); t.stop;};
+		},
+		4, {
+			t = Task({
+				var arr = [0,0,1,1,2,2,3,4,4,5,5,6,6,7,1,1,4,4,5,5,8,1,1,4,4,5,5,8,0,0,1,1,2,2,3,4,4,5,5,6,6,7];
+				arr.do{
+					arg bellNumber;
+
+					f.set(\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3], \t_trig, 1);
+					n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // turn on the bell
+					1.wait;                                 // randomly play bell of duration going from 0.5 to 3s
+					n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // turn off the bell
+				}
+			});
+			42.do{t.start; 0.5.wait; t.stop;};
+		},
+		{
+			t = Task({
+				var bellNumber = Array.rand(7, 0, 11); // number of the bell to be played specified by the first number
+
+				bellNumber.do{
+					arg number;
+					f.set(\freq, ~bellParam[number*3 + 2], \amp, ~bellParam[ (number*3) + 1] * 0.1, \dur, ~bellParam[number*3], \t_trig, 1);
+					n.sendMsg("/activeBell" , \bellNumber, number);  // turn on the bell
+					exprand(0.5,3).wait;                             // randomly play bell of duration going from 0.5 to 3s
+					n.sendMsg("/turnOffBell" , \bellNumber, number); // turn off the bell
+				}
+			});
+			7.do{t.start; 0.5.wait; t.stop;};
+		}
+	);
+});
 )
 
 r.stop; // manually stop the routine
@@ -162,10 +201,12 @@ OSCdef('OSCreceiver3',
 OSCdef('OSCreceiver4',
 	{
 		arg msg;
+		var pres = msg[1];
+
 		r.reset;   // reset the routine
-		r.play();  // play the routine
+		r.value(pres);  // play the routine
 	},
-	"playBells");
+	"/playBells");
 )
 
 
