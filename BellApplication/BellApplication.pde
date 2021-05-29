@@ -23,9 +23,10 @@ OscP5 oscP5;
 NetAddress myRemoteLocation;
 OscMessage myMessage;
 
-int num = 12; //number of bells in the application
-int pres= 4;  //number of presets
-int index; //index to select the background
+int num = 12;  //number of bells in the application
+int pres = 4;   //number of presets
+int index;     //index to select the background
+int preset;    //number of preset selected
 PFont font;
 Bell[] bells = new Bell[num];
 Button[] presets = new Button[pres];
@@ -41,6 +42,8 @@ void setup(){
    font = createFont("Arial Bold", 18);
    textFont(font);
    textAlign(CENTER, CENTER);
+   
+   preset = 0; //reset the preset to default value
    
    //used to place the bells in a line, at the same distance one from the other.
    float xInitDistance = width / (num+1.0); 
@@ -203,6 +206,8 @@ void keyReleased(){
 
 void play(){
   OscMessage playBellsMessage = new OscMessage("/playBells");
+  println("Preset: "+str(preset));
+  playBellsMessage.add(preset);
   oscP5.send(playBellsMessage, myRemoteLocation);
 }
 
@@ -408,7 +413,8 @@ class Button {
   
   void mousePressed(){
     switch(name){
-      case "Preset 1": println("Major Scale"); 
+      case "Preset 1": println("Major Scale");
+        preset = 1;
         bells[0].redraw(100,360,233, true);  // F5 <-
         bells[1].redraw(250,360,221, true);  // G5 <-
         bells[2].redraw(400,360,208, true);  // A5 <-
@@ -424,7 +430,8 @@ class Button {
         break;
         
 
-      case "Preset 2":println("Chromatic scale"); 
+      case "Preset 2":println("Chromatic scale");
+        preset = 2;
         bells[0].redraw(100,360,184, true);  // C6
         bells[1].redraw(250,360,175, true);  // C6#
         bells[2].redraw(400,360,165, true);  // D6
@@ -441,6 +448,7 @@ class Button {
         
         
       case "Preset 3": println("preset 3"); println("Frere Jacques"); // to play: Q W E Q - Q W E Q - E R V - E R V - D F D S A Q - C Z X - C Z X 
+        preset = 3;
         bells[0].redraw(680,340,184, true);  // C6  q medium
         bells[1].redraw(675,350,165, true);  // D6  w medium
         bells[2].redraw(550,360,145, true);  // E6  e medium
@@ -457,6 +465,7 @@ class Button {
       
       case "Preset 4": 
         println("Twinkle twinkle"); // to play: QQWWEER - AASSDDF - WWAASSZ - WWAASSZ - QQWWEER - AASSDDF
+        preset = 4;
         bells[0].redraw(400,240,184, true);  // C6  q medium
         bells[1].redraw(500,260,109, true);  // G6  w medium
         bells[2].redraw(450,250,81, true);   // A6  e medium
