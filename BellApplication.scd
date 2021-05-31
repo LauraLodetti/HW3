@@ -84,7 +84,7 @@ r = Routine({
 
 					f.set(\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3], \t_trig, 1);
 					n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // turn on the bell
-					1.wait;                                 // randomly play bell of duration going from 0.5 to 3s
+					0.5.wait;                                 // randomly play bell of duration going from 0.5 to 3s
 					n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // turn off the bell
 				}
 			});
@@ -92,17 +92,17 @@ r = Routine({
 		},
 		4, {
 			t = Task({
-				var arr = [0,0,1,1,2,2,3,4,4,5,5,6,6,7,1,1,4,4,5,5,8,1,1,4,4,5,5,8,0,0,1,1,2,2,3,4,4,5,5,6,6,7];
+				var arr = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,1,1,4,4,5,5,8,8,1,1,4,4,5,5,8,8,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7];
 				arr.do{
 					arg bellNumber;
 
 					f.set(\freq, ~bellParam[bellNumber*3 + 2], \amp, ~bellParam[ (bellNumber*3) + 1] * 0.1, \dur, ~bellParam[bellNumber*3], \t_trig, 1);
 					n.sendMsg("/activeBell" , \bellNumber, bellNumber);  // turn on the bell
-					1.wait;                                 // randomly play bell of duration going from 0.5 to 3s
+					0.5.wait;                                 // randomly play bell of duration going from 0.5 to 3s
 					n.sendMsg("/turnOffBell" , \bellNumber, bellNumber); // turn off the bell
 				}
 			});
-			42.do{t.start; 0.5.wait; t.stop;};
+			48.do{t.start; 0.5.wait; t.stop;};
 		},
 		{
 			t = Task({

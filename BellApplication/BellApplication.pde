@@ -361,12 +361,12 @@ class Bell {
   void redraw(float x, float y, int newWidth, boolean on){
     xBell = x;
     yBell = y;
-    if(on){
+    /*if(on){
       // set on to send osc messages
       setOn(keyBell);
       // set off to reset the color
       setOff(keyBell);
-    }
+    }*/
     widthBell = newWidth;
     // loading was used to avoid the picture to lose quality, but it undermines the quality of the "animation"
     imageBell = loadImage(name);
